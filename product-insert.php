@@ -8,9 +8,12 @@
 
 <body class="text-center">
 	
-		<div class="container" style="margin-top: 100px">
+		<div class="container">
+			<header class="row">
+				<?php include("nav.php");?>
+			</header>
 	
-	<form method="post" action="index.html">
+	<form method="post" action="index.php">
 		<img src="images/fruit-stop.png" alt width="120px" height="120px">
 		
 		<h1>Insert a product</h1> 

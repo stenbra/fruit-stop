@@ -1,24 +1,22 @@
-<!doctype html>
-<html>
-	<head>
-		<meta charset="utf-8">
-		  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<?php
+session_start();
 
+if(isset($_GET) && !empty($_GET)){
+if($_GET["action"]=="logout"){
+	unset($_SESSION["user"]);
+}
+}
+
+
+include("head.php");
+?>
 	</head>
 	<body>
 	
 		<div class="container">
 		
 			<header class="row">
-				<div class="col-sm-12">
-					<nav class="navbar navbar-light bg-dark">
-					  <a class="navbar-brand" href="#">
-						<img src="images/fruit-stop.png" width="30" height="30" class="d-inline-block align-top" alt="">
-						<span style="color: #ccc">Fruit-Stop</span>
-					  </a>
-					  <a class="btn btn-warning" href="login.html">Login</a>
-					</nav>				
-				</div>
+			<?php include("nav.php");?>
 			</header>
 			
 			<div class="row">
@@ -32,7 +30,7 @@
 					<a class="btn btn-secondary" href="#">Berries</a>
 					<a class="btn btn-secondary" href="#">Vegetables</a>
 					
-					<a class="btn btn-info" href="product-insert.html" style="float: right">insert a product</a>
+					<?php if(isset($_SESSION["user"])){echo '<a class="btn btn-info" href="product-insert.html" style="float: right">insert a product</a>';}?>
 					
 				</div>
 				<div class="col-sm-2">
