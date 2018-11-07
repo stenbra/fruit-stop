@@ -4,63 +4,36 @@ include("includes/db_connect.php");
 if(isset($_SESSION["user"])){
 	$Csql = "SELECT * FROM categories";
 	$stmtDList=$conn->query($Csql);
+if(isset($_GET["id"])&& !empty($_GET["id"])){
+	
+	$selectsql= "SELECT products.id,name,price,categories.category FROM products INNER JOIN ctp ON products.id = productid INNER JOIN categories ON categoryid = categories.id WHERE products.id=:id";
+	$stmnt=$conn->prepare($selectsql)->execute([":id"=>$_GET["id"]]);
+	$res = $stmnt->fetch(PDO::FETCH_ASSOC);
+	$curProd= $res["name"];
+	$curCat= $res["category"];
+	$curPrice= $res["price"];
 
-	
-	
-	if(isset($_POST) && !empty($_POST)){
-		
-	$inposter =0;	
-	
-	$checkSQL="SELECT * FROM products";
-	$checkStmn=$conn->query($checkSQL);
-	while($roow = $checkStmn->fetch(PDO::FETCH_ASSOC)){
-		if($roow["name"] == $_POST["productname"]){
-			$inposter=1;
-		}
-		
-	}
-	if($inposter == 0){
-	$sql="INSERT INTO products(name,price)
-	VALUES(:productname,:price)";
-	
-	$result= $conn->prepare($sql);
-	
-	$res= $result->execute([
-	":productname"=>$_POST["productname"],
-	":price"=>$_POST["price"]
+}
+else{
+	header("Location: index.php");
+}
+
+if(isset($_POST) && !empty($_POST)){
+	$sql1="UPDATE products SET name=:namee,price=:prais WHERE id=:id";
+	$res=([
+		":namee"=>$_POST["productname"],
+		":prais"=>$_POST["price"],
+		":id"=>$_GET["id"]
 	]);
-
-	if(!$res){
-		$output = "Oops something went wrong, uproduct was not added!";
-	}
-	
-	$SPsql= "SELECT id FROM products WHERE name =:productname LIMIT 1";
-	$stmn = $conn->prepare($SPsql);
-	$stmn->execute([":productname"=>$_POST["productname"]]);
-	$resProd = $stmn->fetch();
-	$prod= $resProd["id"];
-	
-	$SPsql= "SELECT id FROM categories WHERE category =:category";
-	$stmn = $conn->prepare($SPsql);
-	$stmn->execute([":category"=>$_POST["category"]]);
-	$resCat = $stmn->fetch();
-	$cat= $resCat["id"];
-	
-
-	$sqlin= "INSERT INTO ctp(productid,categoryid) VALUES($prod,$cat)";
-	$res= $conn->prepare($sqlin)->execute();
-	
-	Header('Location: index.php');
-	exit;
-
-	}
-	else{
-		$output = "item already exists!";
-	}
+	$result= $conn->prepare($sgl1)->execute($res);
+	$sql1="UPDATE ctp SET categoryid=:cid WHERE productid=:id";
+	$resu=([
+		":ncid"=>$_POST["category"],
+		":id"=>$_GET["id"]
+	]);
 }
 }
 else{
-	unset($_SESSION["user"]);
 	header("Location: index.php");
 }
 
@@ -87,13 +60,13 @@ else{
 		<h1>Insert a product</h1> 
 		<?php if(!empty($output)){echo "<h3 class='alert alert-warning'>".$output."</h3>";}?>
 		<label for="productname">Productname</label>
-		<input type="text" name="productname" id="productname" placeholder="Productname" required><br>
+		<input type="text" name="productname" id="productname" value="<?php echo $curProd;?>" required><br>
 		
 		<label for="price">Price</label>
-		<input type="number" min="0" step="0.01" name="price" id="price" required><br>
+		<input type="number" min="0" step="0.01" name="price" id="price" value="<?php echo $curPrice;?>" required><br>
 		
 		<label for="category">Category</label>
-		<input type="text" name="category" id="category" list="categorylist" required><br>
+		<input type="text" name="category" id="category" list="categorylist" value="<?php echo $curCat;?>" required><br>
 		<datalist id="categorylist">
 		<?php while($row = $stmtDList->fetch(PDO::FETCH_ASSOC)){?>
 		<option value="<?php echo $row["category"]?>">
