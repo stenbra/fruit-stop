@@ -1,0 +1,23 @@
+ #wrap {
+	width:50%;
+	background-color: #eee;
+ }
+ h4 {
+float: right;}
+.product {
+ background-color: #666;
+ margin: 10px 5%;
+ padding:15px;
+ width: 85%;
+ overflow:hidden
+ }
+ .white{
+	 background-color: #fff;
+	 padding:5px;
+	 margin:10px;
+ }
+#black{
+	background-color: #343a40;
+}
+
+ 

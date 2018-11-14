@@ -2,6 +2,7 @@ var app = new Vue({
   el: '#app',
   data: {
     product: "",
+	name:"",
     id: 0
   },
   methods: {
@@ -62,6 +63,24 @@ var app = new Vue({
            console.log(error);
         });
       
+    }
+	,
+	    search: function(){
+
+		if(this.name!=""){
+
+			axios.get('./ajax.php', {
+			   params: {
+				name: this.name
+			   }
+			})
+			.then(function (response) {
+			   app.product = response.data;
+			})
+			.catch(function (error) {
+			   console.log(error);
+			});
+		}
     }
   }
 })

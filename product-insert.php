@@ -1,14 +1,22 @@
 <?php
 session_start();
 include("includes/db_connect.php");
-if(isset($_SESSION["user"])){
+if(isset($_SESSION["user"])||isset($_SESSION["admin"])){
 	$Csql = "SELECT * FROM categories";
 	$stmtDList=$conn->query($Csql);
 
 	
 	
 	if(isset($_POST) && !empty($_POST)){
-		
+	$pow=0;
+	while($row = $stmtDList->fetch(PDO::FETCH_ASSOC)){
+		if($_POST["category"]==$row["category"]){
+			$pow=1;
+		}
+	}
+	
+	
+	if($pow==1){
 	$inposter =0;	
 	
 	$checkSQL="SELECT * FROM products";
@@ -46,7 +54,7 @@ if(isset($_SESSION["user"])){
 	$resCat = $stmn->fetch();
 	$cat= $resCat["id"];
 	
-
+	
 	$sqlin= "INSERT INTO ctp(productid,categoryid) VALUES($prod,$cat)";
 	$res= $conn->prepare($sqlin)->execute();
 	
@@ -57,7 +65,11 @@ if(isset($_SESSION["user"])){
 	else{
 		$output = "item already exists!";
 	}
-}
+	}
+	else{
+		$output = "Please enter a valid category!";
+	}
+	}
 }
 else{
 	unset($_SESSION["user"]);

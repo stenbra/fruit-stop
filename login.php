@@ -3,7 +3,7 @@ session_start();
 include("includes/db_connect.php");
 
 if(isset($_POST) && !empty($_POST)){
-	
+	$pow=0;
 	$sql= "SELECT * FROM login WHERE 
 	username=:username AND password=:password LIMIT 1";
 	
@@ -13,14 +13,28 @@ if(isset($_POST) && !empty($_POST)){
 	];
 	$res= $conn->prepare($sql);
 	$res->execute($row);
-	if($res->fetchColumn()<1){
+	while($ress= $res->fetch(PDO::FETCH_ASSOC)){
+		$pow=1;
+		if($ress["admin"]==1){
+			$_SESSION["admin"] = 1;
+			header("Location: index.php");
+		}
+		else if($ress["admin"]==0){
+			$_SESSION["user"] = 1;
+			header("Location: index.php");
+			
+		}
+		else{
+			$output = "something went wrong";
+		}
+	}
+	if($pow==0){
 		$output = "User not found, do you want to sign up?";
 	}
-	else{
+	//if($res->fetchColumn()<1){
+//		$output = "User not found, do you want to sign up?";
+//	}
 
-		$_SESSION["user"] = 1;
-		header("Location: index.php");
-	}
 }
 
 
